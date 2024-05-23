@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finz Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/2803875ee9.js" crossorigin="anonymous"></script>
+    <script>
+        function loginAsGuest() {
+            fetch("{% url 'guest_login' %}")
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelector("input[name='username']").value = data.username;
+                    document.querySelector("input[name='senha']").value = "dNH0w7OT#£2SiRsr9K7";
+                    document.querySelector("form").submit();
+                });
+        }
+    </script>
+</head>
+
+<body class="text-white flex flex-col items-center justify-center min-h-screen relative" style="background-color:#131314;">
+    <div class="w-full sm:w-96 p-4">
+        <img src="/static/logo.png" alt="Logo" class="mx-auto mb-4">
+
+        <h1 class="text-2xl font-bold mb-4 text-center">Login</h1>
+
+        <form action="{% url 'login' %}" method="POST" class="space-y-4">{% csrf_token %}
+            <input type="text" placeholder="Username" name="username"
+                class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" placeholder="Senha" name="senha"
+                class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="submit" value="Login"
+                class="w-full bg-gray-800 text-white py-2 px-6 rounded-md transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer ">
+        </form>
+
+        <p class="mt-4 mb-8 text-center">OU</p>
+
+        <div class="flex flex-col sm:flex-row justify-between">
+            <a href="/auth/cadastro" class="w-full sm:w-auto bg-gray-800 text-white py-2 px-6 rounded-md transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer mb-2 sm:mb-0">Cadastrar</a>
+            <button type="button" onclick="loginAsGuest()" class="w-full sm:w-auto bg-gray-800 text-white py-2 px-6 rounded-md transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer"><i class="fas fa-solid fa-user mr-2"></i> Convidado</button>
+        </div>
+    </div>
+</body>
+
+</html>

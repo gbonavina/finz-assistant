@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/2803875ee9.js" crossorigin="anonymous"></script>
+    <style>
+        #error-message {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body class="text-white flex flex-col items-center justify-center min-h-screen relative" style="background-color:#131314;">
+    <div class="w-full sm:w-96 p-4">
+        <img src="/static/logo.png" alt="Logo" class="mx-auto mb-4">
+        <h1 class="text-2xl font-bold mb-4 text-center">Cadastro</h1>
+        
+        <!-- Mostra a mensagem de erro se o usuário já existe -->
+        <div id="error-message">Não foi possível fazer o cadastro, esse nome de usuário já existe.</div>
+
+        <form id="signup-form" action="{% url 'cadastro' %}" method="POST" class="w-full max-w-sm p-6 rounded-md ">{% csrf_token %}
+            <input type="text" placeholder="Username" name="username" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="email" placeholder="Email" name="email" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" placeholder="Senha" name="senha" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="submit" value="Cadastrar" class="w-full bg-gray-800 text-white py-2 px-6 rounded-md transition duration-300 ease-in-out hover:bg-blue-700 cursor-pointer">
+        </form>
+        
+        <p class="mt-4 mb-8 text-center">OU</p>
+        
+        <div class="flex justify-center">
+            <a href="/auth/login" class="text-center  bg-gray-800 text-white py-2 px-6 rounded-md transition duration-300 ease-in-out hover:bg-blue-700 cursor-pointer">Login</a>
+        </div>
+    </div>
+</body>
+
+</html>
