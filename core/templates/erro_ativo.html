@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ativos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .center-table {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px; 
+        }
+
+        th {
+            text-align: center; 
+        }
+
+        .action-buttons {
+            text-align: center; 
+        }
+
+        .no-assets {
+            margin-bottom: 20px;
+        }
+        
+        input:focus {
+            background-color: #131314;
+            color: white;
+        }
+
+        .home-icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        input.uppercase {
+            text-transform: uppercase;
+        }
+
+        #error-message {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            width: 400px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="text-white flex flex-col items-center justify-center min-h-screen relative" style="background-color:#131314;">
+    <a href="/core/plataforma" class="home-icon">
+        <i class="fas fa-home"></i>
+    </a>
+    <img src="/static/logo.png" alt="Logo" class="mx-auto mb-4">
+    <div id="error-message">Os valores de quantidade e/ou preço são inválidos.</div>
+    <h1 class="text-2xl font-bold mb-14 text-center mt-8">Sua Carteira</h1>
+    <div class="center-table">
+        <table class="w-full sm:w-96 p-4">
+            <tr>
+                <th class="text-left">Tipo</th>
+                <th class="text-left">Código</th>
+                <th class="text-left">Quantidade</th>
+                <th class="text-left">Preço</th>
+            </tr>
+            {% if ativos %}
+                {% for ativo in ativos %}
+                <tr>
+                    <td>{{ ativo.tipo | upper }}</td>
+                    <td>{{ ativo.codigo }}</td>
+                    <td>{{ ativo.quant }}</td>
+                    <td>{{ ativo.price }}</td>
+                    <td class="action-buttons"> 
+                        <a href="{% url 'editar' ativo.id %}" class="text-blue-600 mr-2">Editar</a>
+                        <form action="{% url 'delete' ativo.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-600">Deletar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-left mb-12 no-assets">Nenhum ativo encontrado.</td> 
+                </tr>
+            {% endif %}
+        </table>
+    </div> 
+
+    <div class="flex justify-center mt-8">
+        <button id="addButton" class="w-full sm:w-96 bg-gray-800 text-white py-2 px-6 rounded-md transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer mb-4">Adicionar</button>
+    </div>
+    
+    <form id="addForm" action="{% url 'salvar' %}" method="post" class="w-full sm:w-96 p-4 hidden">
+        {% csrf_token %}
+        <select name="tipo" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2">
+            <option selected disabled>Selecione o tipo de ativo</option>
+            <option value="fiis">FIIs</option>
+            <option value="acoes">Ações</option>
+            <option value="bdrs">BDRs</option>
+            <option value="etfs">ETFs</option>
+            <option value="etfs-internacional">ETFs Internacional</option>
+            <option value="stocks">Stocks</option>
+            <option value="reits">REITs</option>
+            <option value="moedas">Moedas</option>
+        </select>
+        <input type="text" name="codigo" placeholder="Código" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 uppercase" oninput="this.value = this.value.toUpperCase()">
+        <input type="number" name="quant" step="0.01" placeholder="Quantidade" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2">
+        <input type="number" name="price" step="0.01" placeholder="Preço Médio" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2">
+        <button type="submit" class="w-full bg-gray-800 text-white py-2 px-6 rounded-md transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">Salvar</button>
+    </form>
+
+    <script>
+        function hideAddButton() {
+            document.getElementById('addButton').style.display = 'none';
+        }
+
+        function showAddButton() {
+            document.getElementById('addButton').style.display = 'block';
+        }
+
+        document.getElementById('addButton').addEventListener('click', function() {
+            document.getElementById('addForm').classList.toggle('hidden');
+            hideAddButton(); 
+        });
+
+        document.getElementById('addForm').addEventListener('submit', function() {
+            showAddButton();
+        });
+    </script>
+</body>
+</html>

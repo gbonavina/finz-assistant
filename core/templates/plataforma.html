@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/2803875ee9.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px; 
+            height: 100%;
+            background-color: #1E1E1E;
+            padding-top: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+    
+        .sidebar a {
+        display: block;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 16px;
+        }
+
+        .add-icon {
+        color: white;
+        text-align: center;
+        cursor: pointer;
+        }
+
+        .sidebar::-webkit-scrollbar {
+        width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+        background: #444;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+        background-color: #888; 
+        border-radius: 10px; 
+        border: 2px solid #444;
+        }
+
+        .sidebar {
+        scrollbar-width: thin;
+        scrollbar-color: #888 #444;
+        }
+
+        body {
+        color: white;
+        background-color:#131314;
+        overflow-y: transparent;
+        height: 100vh;  
+        margin: 0;  
+        }
+
+        .content {
+        margin-left: 320px;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        }
+
+        .box {
+            margin-top: 25%;
+            background-color: #2D2D2D;
+            border-radius: 15px;
+            padding: 20px;
+            width: calc(32% - 10px); /* 32% para considerar o espaçamento, -10px para margens */
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .box:hover {
+            background-color: #383838;
+        }
+
+        .output {
+            margin-top: 20px;
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 10%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        .typing-animation {
+            animation: typing 1s steps(40, end) forwards;
+        }
+
+        /* Estilos para a barra de chat */
+        .chat-bar {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 75%;
+            background-color: #2D2D2D;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            border: none;
+            background-color: #1E1E1E;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .chat-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chat-button:hover {
+            background-color: #2980b9;
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .user-button {
+            background-color: #2D2D2D;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            outline: 2px solid #383838;
+            pointer-events: none;
+        }
+
+        .output {
+            margin-top: 50px;
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .ativo-box {
+            background-color: #131314;
+            color: white;
+            padding: 10px;
+            margin-left: 0;
+            margin-right: 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            width: 90%;
+            text-align: center;
+            font-weight: bold;
+            outline: 2px solid #1E1E1E;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="/">
+            <img src="/static/logo.png" alt="Logo" class="mx-auto mb-4">
+        </a>
+        <h2 class="text-left text-white text-lg font-semibold px-4 py-2">Meus Ativos</h2>
+        <h2 class="text-left text-white text-lg font-semibold px-4 py-2">Saldo Total: R${{ saldo_total |floatformat:2 }}</h2>
+        <div class="add-icon text-white text-lg font-semibold px-4 py-2 mb-4" onclick="window.location.href='/core/'">Adicionar +</div>
+        <div class="add-icon text-white text-lg font-semibold px-4 py-2 mb-4" onclick="window.location.href='/core/'">
+            Editar <i class="fas fa-pencil-alt text-base"></i>
+        </div>
+        
+        <ul class="text-left ml-4">
+            {% for ativo in ativos %}
+            <li class="ativo-box">
+                {% if ativo.tipo == "moedas" %}
+                    Código: {{ ativo.codigo | upper }}<br>
+                    Quantidade: {{ ativo.quant }}<br>
+                    Preço Médio: R${{ ativo.price }}<br>
+                    Cotação atual: {{ ativo.cotacao }}<br>
+                    Variação (24h): {{ ativo.variacao_24h }}<br>
+                    Variação (12M): {{ ativo.variacao_12m }}
+                {% else %}
+                    Código: {{ ativo.codigo | upper }}<br>
+                    Quantidade: {{ ativo.quant }}<br>
+                    Preço Médio: R${{ ativo.price }}<br>
+                    Cotação atual: {{ ativo.cotacao}}<br>
+                    Dividend Yield: {{ ativo.dividend_yield }}<br>
+                    P/VP: {{ ativo.p_vp }}
+                {% endif %}
+                <br><br>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="user-menu">
+            <button class="user-button">Olá, {{ user.username }}</button>
+            <a href="/logout" style="margin-left: 10px; color: white; text-decoration: none;">Logout</a>
+        </div>
+        <div class="box" onclick="getApi('get_insights')">
+            Me de insights sobre a minha carteira de investimentos! 💰
+        </div>
+        <div class="box" onclick="getApi('get_investimento')">
+            Qual é o meu ativo com maior valorização nos últimos 12 meses? 📈
+        </div>
+        <div class="box" onclick="getApi('get_comparativo')">
+            Como minha carteira se compara ao desempenho médio do mercado neste ano? 📊
+        </div>
+
+        <div class="chat-bar">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Digite sua pergunta...">
+            <button class="chat-button" onclick="getChat()">Enviar</button>
+        </div>
+        <div id="output" class="output">
+            <p id="output-text"></p>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        function hideBoxes() {
+            const boxes = document.querySelectorAll('.box');
+            boxes.forEach(box => {
+                box.style.display = 'none';
+            });
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function startTypingAnimation(html) {
+            const outputElement = document.getElementById('output-text');
+            outputElement.innerHTML = '';
+
+            let index = 0;
+            const intervalId = setInterval(function() {
+                if (index < html.length) {
+                    if (html[index] === '<' && html[index + 1] === 'b' && html[index + 2] === 'r' && html[index + 3] === '>') {
+                        outputElement.insertAdjacentHTML('beforeend', '<br>');
+                        index += 4;
+                    } else {
+                        outputElement.insertAdjacentHTML('beforeend', html[index]);
+                        index++;
+                    }
+                } else {
+                    clearInterval(intervalId);
+                }
+            }, 35);
+        }
+
+        function getApi(type) {
+            hideBoxes();
+            showLoading();
+        
+            let url = '/api_gemini/' + type + '/'; 
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    let outputText = '';
+                    switch(type) {
+                        case 'get_insights':
+                            outputText = data.result;
+                            break;
+                        case 'get_investimento':
+                            outputText = data.result;
+                            break;
+                        case 'get_comparativo':
+                            outputText = data.result;
+                            break;
+                    }
+                    startTypingAnimation(outputText);
+                    document.getElementById('output').style.display = 'block';
+                    hideLoading();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    hideLoading();
+                });
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finz Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        .home-icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body class="text-white flex flex-col items-center justify-center min-h-screen relative" style="background-color:#131314;">
+    <a href="/core/plataforma" class="home-icon absolute top-5 left-5 text-white">
+        <i class="fas fa-home"></i>
+    </a>
+    <img src="/static/logo.png" alt="Logo" class="mx-auto mb-4">
+    <div class="text-center">
+        <h1 class="text-2xl font-bold mb-4">Edição do Ativo: {{ ativo.codigo }}</h1>
+        <form action="{% url 'update' ativo.id %}" method="POST" class="flex flex-col space-y-4">
+            {% csrf_token %}
+            <select name="tipo" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2">
+                <option selected disabled>Selecione o tipo de ativo</option>
+                <option value="fiis" {% if ativo.tipo == "fiis" %}selected{% endif %}>FIIs</option>
+                <option value="acoes" {% if ativo.tipo == "acoes" %}selected{% endif %}>Ações</option>
+                <option value="bdrs" {% if ativo.tipo == "bdrs" %}selected{% endif %}>BDRs</option>
+                <option value="etfs" {% if ativo.tipo == "etfs" %}selected{% endif %}>ETFs</option>
+                <option value="etfs-internacional" {% if ativo.tipo == "etfs-internacional" %}selected{% endif %}>ETFs Internacional</option>
+                <option value="stocks" {% if ativo.tipo == "stocks" %}selected{% endif %}>Stocks</option>
+                <option value="reits" {% if ativo.tipo == "reits" %}selected{% endif %}>REITs</option>
+                <option value="moedas" {% if ativo.tipo == "moedas" %}selected{% endif %}>Moedas</option>
+            </select>
+            <input type="text" name="codigo" placeholder="Código" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 uppercase" oninput="this.value = this.value.toUpperCase()" value="{{ ativo.codigo }}">
+            <input type="number" name="quant" step="0.01" placeholder="Quantidade" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2" value="{{ ativo.quant }}">
+            <input type="number" name="price" step="0.01" placeholder="Preço Médio" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2" value="{{ ativo.price }}">
+            <button type="submit" class="w-full bg-gray-800 text-white py-2 px-6 rounded-md transition duration-300 ease-in-out hover:bg-blue-600 cursor-pointer">Salvar</button>        
+        </form>
+    </div>
+</body>
+</html>
